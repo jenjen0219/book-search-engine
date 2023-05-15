@@ -1,7 +1,4 @@
-const express = require('express');
-const path = require('path');
-const db = require('./config/connection');
-const routes = require('./routes');
+//will no longer need to define how to define routing and parsing of incoming requests which is used in REACT since we are shifting gears into Apollo which requires the following
 
 //bringing in the proper objects to start off the transition from REST to Apollo
 const {ApolloServer} = require('apollo-server-express');
@@ -26,10 +23,23 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
+//routing is handled thorugh graphQL resolvers
 
+const startApolloServer = async (typeDefs, resolvers) => {
+  await server.start();
+  // integrate our Apollo server with the Express application as middleware
+  server.applyMiddleware({ app });
 
-app.use(routes);
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      // log where we can go to test our GQL API
+      console.log(
+        `Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`
+      );
+    });
+  });
+};
 
-db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-});
+// Call the async function to start the server
+startApolloServer(typeDefs, resolvers);
