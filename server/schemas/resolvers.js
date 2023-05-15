@@ -5,12 +5,12 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
     Query: {
-        savedBooks: async (parent, args, context) => {
-            if (context.user) {
-                const user = await User.findOne({ _id: context.user._id }).populate('savedBooks');
-                return user.savedBooks;
-            }
-        },
+        // savedBooks: async (parent, args, context) => {
+        //     if (context.user) {
+        //         const user = await User.findOne({ _id: context.user._id }).populate('savedBooks');
+        //         return user.savedBooks;
+        //     }
+        // },
         me: async (parent, args, context) => {
             // check if the user exists
             if (context.user) {
